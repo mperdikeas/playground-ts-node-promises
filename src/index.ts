@@ -255,7 +255,7 @@ if (false) {
     });
 }
 
-if (true)
+if (false)
 {
     /* Exceptions - synchronous case
        The below code demonstrates that exceptions thrown in the body of a synchronous
@@ -290,3 +290,32 @@ if (true)
     console.log('S0');
 }
 
+
+if (true) {
+    // resolved and unresolved promises
+
+    const p1 = new Promise( (resolve) => {
+        resolve(42);
+    });
+    console.log('p1 is: ', p1);
+
+    const p1a = p1.then( (value) => {
+        console.log('value inside p1.then is: ', value);
+        return value;
+    });
+
+    console.log('p1a is: ', p1a);
+
+    const p1b = p1a.then( (value) => {
+        console.log('value inside p1a.then is: ', value);
+        return value;
+    });
+
+    console.log('p1b is: ', p1b);
+
+    const p2 = new Promise( (resolve) => {
+        setTimeout(()=>{resolve(42)}, 100);
+    });
+    console.log('p2 is: ', p2);
+
+}
