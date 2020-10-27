@@ -291,7 +291,7 @@ if (false)
 }
 
 
-if (true) {
+if (false) {
     // resolved and unresolved promises
 
     const p1 = new Promise( (resolve) => {
@@ -317,5 +317,38 @@ if (true) {
         setTimeout(()=>{resolve(42)}, 100);
     });
     console.log('p2 is: ', p2);
+
+}
+
+if (false) {
+    // this is a useful idiom in various Redux async action creators
+    const p1 = Promise.resolve(42);
+    console.log(p1);
+    p1.then((value)=>{
+        console.log(value);
+    });
+
+    const p2 = Promise.reject('fubar');
+    console.log(p2);
+    p2.then((value)=>{
+        console.log('value: ', value);
+    }).catch ( error => {
+        console.log('error: ', error);
+    });
+}
+
+if (true) {
+    // this goes to show that it is not possible to type the reject type of an exception
+    const p : Promise<number> = new Promise( (resolve, reject) => {
+        if (Math.random()>0.5)
+            resolve(42);
+        else
+            reject('42');
+
+    });
+
+    p.catch( (error) => {
+        console.log(`error is : ${error}`);
+    });
 
 }
