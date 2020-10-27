@@ -337,7 +337,7 @@ if (false) {
     });
 }
 
-if (true) {
+if (false) {
     // this goes to show that it is not possible to type the reject type of an exception
     const p : Promise<number> = new Promise( (resolve, reject) => {
         if (Math.random()>0.5)
@@ -352,3 +352,149 @@ if (true) {
     });
 
 }
+
+if (false) {
+    let p1 = new Promise(function(resolve, reject) {
+        resolve(42);
+    });
+
+    let p2 = p1.then(function(value) {
+        console.log(value);     // 42
+        return Promise.resolve();
+    });
+
+    let p2b = p1.then(function(value) {
+        console.log(value);     // 42
+        // doing nothing also result in the promise's then
+    });
+
+    
+
+    p2.then(function(value) {
+        console.log('in p2.then');
+        if (value != undefined)
+            throw 'fubar';
+    });
+
+    p2b.then(function(value) {
+        console.log('in p2b.then');
+        if (value != undefined)
+            throw 'fubar';
+    });    
+}
+
+
+if (false) {
+    // I see no apparent difference between the following two cases
+    {
+        let p1 = new Promise<number>(function(resolve, reject) {
+            resolve(42);
+        });
+
+        let p2 = p1.then(function(value) {
+            return value+1;
+        });
+
+        let p3 = p2.then(function(value) {
+            return value+1;
+        });    
+
+        let p4 = p3.then(function(value) {
+            return Promise.resolve(value+1);
+        });    
+
+        p4.then(function (value) {
+            console.log(`ultimate value is: ${value}`);
+        }).catch(function (error) {
+            console.log('you will NEVER see this!');
+        });
+
+        console.log('end of test A');
+    }
+    {
+        let p1 = new Promise<number>(function(resolve, reject) {
+            resolve(42);
+        });
+
+        let p2 = p1.then(function(value) {
+            return value+1;
+        });
+
+        let p3 = p2.then(function(value) {
+            return value+1;
+        });    
+
+        let p4 = p3.then(function(value) {
+            return value+1;
+        });    
+
+        p4.then(function (value) {
+            console.log(`ultimate value is: ${value}`);
+        }).catch(function (error) {
+            console.log('you will NEVER see this!');
+        });
+
+        console.log('end of test A');
+    }
+}
+
+if (false) {
+    // I see no difference here either:
+    {
+        let p1 = new Promise(function(resolve, reject) {
+            resolve(42);
+        });
+
+        let p2 = p1.then( (value) => {
+            return value;
+        });
+
+        p2.then( (value) => {
+            console.log(value);
+        });
+    }
+    {
+        let p1 = new Promise(function(resolve, reject) {
+            resolve(42);
+        });
+
+        let p2 = p1.then( (value) => {
+            return Promise.resolve(value);
+        });
+
+        p2.then( (value) => {
+            console.log(value);
+        });
+    }
+}
+
+if (false) {
+    // I see no difference here either:
+    {
+        let p1: Promise<number> = new Promise(function(resolve, reject) {
+            resolve(42);
+        });
+
+        p1.then( (value) => {
+            console.log(value);
+        });
+    }
+    {
+        let p1: Promise<number> = new Promise(function(resolve, reject) {
+            resolve(Promise.resolve(42));
+        });
+
+        p1.then( (value) => {
+            console.log(value);
+        });
+    }
+}
+
+if (true) {
+    // weirdly (given the above) TypeScript baulks if I type p as number
+    const p: Promise<number> = Promise.resolve(42);
+    console.log(p); // prints 'Promise {42}'
+    
+}
+
+
