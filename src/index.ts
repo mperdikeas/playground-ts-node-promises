@@ -490,11 +490,38 @@ if (false) {
     }
 }
 
-if (true) {
+if (false) {
     // weirdly (given the above) TypeScript baulks if I type p as number
     const p: Promise<number> = Promise.resolve(42);
     console.log(p); // prints 'Promise {42}'
-    
+}
+
+if (false) {
+    // calling a promise only for its side effects
+    let p: Promise<void> = new Promise( (resolve, reject)=>{
+        setTimeout( ()=>{resolve()}, 1000);
+    });
+    console.log(p);
 }
 
 
+
+if (true) {
+    // typing promises
+
+    const p: Promise<number> = new Promise( (resolve, reject) => {
+        
+        resolve(42);
+    });
+
+    const p2: Promise<number> = p.then( (v):Promise<number> => {
+
+        return Promise.resolve(v);
+    }).catch ( (err): Promise<any> => {
+        return Promise.reject(err);
+    });
+
+    console.log(p2);
+
+
+}
