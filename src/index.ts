@@ -506,7 +506,7 @@ if (false) {
 
 
 
-if (true) {
+if (false) {
     // typing promises
 
     const p: Promise<number> = new Promise( (resolve, reject) => {
@@ -516,12 +516,90 @@ if (true) {
 
     const p2: Promise<number> = p.then( (v):Promise<number> => {
 
-        return Promise.resolve(v);
+        return Promise.resolve(v+1);
     }).catch ( (err): Promise<any> => {
         return Promise.reject(err);
     });
 
-    console.log(p2);
+
+  p2.then( (v: number) => {
+    console.log(v);
+  });
+           
+
+
+}
+
+if (true) {
+  (()=>{
+    // where do the rejects return?
+
+    function giveMeANumberEventuallyInner(b: boolean): Promise<number> {
+      if (b)
+        return Promise.resolve(42);
+      else
+        return Promise.reject('fubar 1');
+    }
+
+    function giveMeANumberEventuallyOuter(bOuter: boolean, bInner: boolean): Promise<number> {
+      const p1: Promise<number> = giveMeANumberEventuallyInner(bInner);
+      return p1.then( (x: number) => {
+        if (bOuter)
+          return Promise.resolve(x+1);
+        else
+          return Promise.reject('fubar 2');
+      }).catch ( (err)=>{
+        console.log('giveMeANumberEventuallyOuter::catch', err);
+        // return Promise.resolve(50);
+        return Promise.reject('fubar 3');
+      });
+    }
+
+    if (false)
+    {
+      const p2: Promise<number> = giveMeANumberEventuallyOuter(true, true);
+      p2.then( (x)=>{
+        console.log(`p2 returned : ${x}`);
+      }).catch( (err) =>{
+        console.log(err);
+      });
+    }
+
+    if (false)
+    {
+      const p2: Promise<number> = giveMeANumberEventuallyOuter(true, false);
+      p2.then( (x)=>{
+        console.log(`p2 returned : ${x}`);
+      }).catch( (err) =>{
+        console.log(err);
+      });
+    }
+
+    // the last two paths false/true and false/false are identical
+    if (false)
+    {
+      const p2: Promise<number> = giveMeANumberEventuallyOuter(false, true);
+      p2.then( (x)=>{
+        console.log(`p2 returned : ${x}`);
+      }).catch( (err) =>{
+        console.log(err);
+      });
+    }
+
+    if (true)
+    {
+      const p2: Promise<number> = giveMeANumberEventuallyOuter(false, false);
+      p2.then( (x)=>{
+        console.log(`p2 returned : ${x}`);
+      }).catch( (err) =>{
+        console.log(err);
+      });
+    }            
+
+    
+  })();
+  
+           
 
 
 }
